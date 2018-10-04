@@ -1,0 +1,32 @@
+{
+  "blockchain": {
+    "type": "fabric",
+    "config": "benchmark/kafka/fabric.json"
+  },
+  "command" : {
+    "start": "I:/caliper/benchmark/kafka/KafkaNetwork/start.sh",
+    "end" : "docker stop $(docker ps -q);docker rm $(docker ps -aq);docker rmi $(docker images dev* -q)"
+  },
+  "test": {
+    "name": "simple",
+    "description" : "This is an example benchmark for caliper, to test the backend DLT's performance with simple account opening & querying transactions",
+    "clients": {
+      "type": "local",
+      "number": 5
+    },
+    "rounds": [{
+        "label" : "open",
+        "txNumber" : [1000],
+        "rateControl" : [{"type": "fixed-rate", "opts": {"tps" : 50}}],
+        "arguments": { "money": 10000 },
+        "callback" : "benchmark/simple/open.js"
+      }]
+  },
+  "monitor": {
+    "type": ["docker"],
+    "docker":{
+      "name": ["all"]
+    },
+    "interval": 1
+  }
+}
